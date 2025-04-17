@@ -10,7 +10,7 @@ function onOpen() {
     .addItem("Send to All Subscribers", "confirmBulkSend")
     .addItem("View Analytics Dashboard", "showAnalytics")
     .addSeparator()
-    .addItem("ystem Settings", "showSystemSettings")
+    .addItem("System Settings", "showSystemSettings")
     .addToUi();
 }
 
