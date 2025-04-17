@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Your Subscription</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .subscription-container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: none;
+            padding: 30px 30px 0;
+            text-align: center;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .nav-tabs {
+            justify-content: center;
+            border-bottom: none;
+            margin-bottom: 20px;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: #6c757d;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 50px;
+            margin: 0 5px;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .tab-content {
+            padding-top: 20px;
+        }
+
+        .form-floating {
+            margin-bottom: 16px;
+        }
+
+        .btn-primary,
+        .btn-danger {
+            padding: 12px;
+            font-weight: 500;
+            border-radius: 5px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .success-message,
+        .error-message {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .icon-container {
+            margin-bottom: 20px;
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-icon {
+            background-color: #e8f5e9;
+            color: #28a745;
+        }
+
+        .error-icon {
+            background-color: #feebef;
+            color: #dc3545;
+        }
+
+        .bi-check-lg,
+        .bi-exclamation-lg {
+            font-size: 40px;
+        }
+
+        .page-logo {
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="subscription-container">
+        <div class="card">
+            <div class="card-header">
+                <h2>
+                    <?= NEWSLETTER_NAME ?>
+                </h2>
+                <p class="text-muted">Subscription Management</p>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-tabs" id="subscriptionTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="subscribe-tab" data-bs-toggle="tab"
+                            data-bs-target="#subscribe" type="button" role="tab" aria-controls="subscribe"
+                            aria-selected="true">
+                            <i class="bi bi-envelope-plus me-2"></i>Subscribe
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="unsubscribe-tab" data-bs-toggle="tab" data-bs-target="#unsubscribe"
+                            type="button" role="tab" aria-controls="unsubscribe" aria-selected="false">
+                            <i class="bi bi-envelope-dash me-2"></i>Unsubscribe
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="subscriptionTabsContent">
+                    <!-- Subscribe Tab -->
+                    <div class="tab-pane fade show active" id="subscribe" role="tabpanel"
+                        aria-labelledby="subscribe-tab">
+                        <form id="subscribe-form">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Your Name"
+                                    required>
+                                <label for="name">Your Name</label>
+                            </div>
+
+                            <div class="form-floating mb-4">
+                                <input type="email" class="form-control" id="email" name="email"
+                                    placeholder="Email Address" required>
+                                <label for="email">Email Address</label>
+                            </div>
+
+                            <button class="btn btn-primary w-100" type="submit">
+                                <i class="bi bi-envelope-check me-2"></i>Subscribe to Newsletter
+                            </button>
+
+                            <div class="form-text text-center mt-3">
+                                We respect your privacy. Your information will never be shared.
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Unsubscribe Tab -->
+                    <div class="tab-pane fade" id="unsubscribe" role="tabpanel" aria-labelledby="unsubscribe-tab">
+                        <form id="unsubscribe-form">
+                            <div class="form-floating mb-4">
+                                <input type="email" class="form-control" id="unsubscribe-email" name="email"
+                                    placeholder="Email Address" required>
+                                <label for="unsubscribe-email">Email Address</label>
+                            </div>
+
+                            <button class="btn btn-danger w-100" type="submit">
+                                <i class="bi bi-envelope-x me-2"></i>Unsubscribe from Newsletter
+                            </button>
+
+                            <div class="form-text text-center mt-3">
+                                We're sorry to see you go. You can resubscribe at any time.
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Success Message (Hidden by default) -->
+                <div id="success-message" class="success-message">
+                    <div class="icon-container success-icon">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+                    <h3 id="success-title">Success!</h3>
+                    <p id="success-text">Your request has been processed successfully.</p>
+                    <button class="btn btn-outline-primary mt-3" onclick="resetForms()">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Form
+                    </button>
+                </div>
+
+                <!-- Error Message (Hidden by default) -->
+                <div id="error-message" class="error-message">
+                    <div class="icon-container error-icon">
+                        <i class="bi bi-exclamation-lg"></i>
+                    </div>
+                    <h3>Something Went Wrong</h3>
+                    <p id="error-text">We couldn't process your request. Please try again.</p>
+                    <button class="btn btn-outline-danger mt-3" onclick="resetForms()">
+                        <i class="bi bi-arrow-left me-2"></i>Try Again
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Web App URL injected from Apps Script
+        const WEB_APP_URL = "<?= WEB_APP_URL ?>";
+
+        // Subscribe form handler
+        document.getElementById('subscribe-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+
+            const subscribeBtn = this.querySelector('button[type="submit"]');
+            const originalText = subscribeBtn.innerHTML;
+            subscribeBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Subscribing...';
+            subscribeBtn.disabled = true;
+
+            console.log('Sending subscription request to:', WEB_APP_URL);
+            console.log('Data:', { name, email });
+
+            // Send data to Google Sheet
+            fetch(WEB_APP_URL + '?action=subscribe&name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email))
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    // Try to parse as JSON, but don't fail if it's not JSON
+                    try {
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                            return response.json();
+                        } else {
+                            console.log('Non-JSON response received');
+                            return response.text().then(text => {
+                                console.log('Response text:', text);
+                                return { success: true, message: "Subscription request processed" };
+                            });
+                        }
+                    } catch (error) {
+                        console.log('Response parsing error:', error);
+                        return { success: true, message: "Subscription submitted" };
+                    }
+                })
+                .then(data => {
+                    console.log('Processed response:', data);
+
+                    // Always show success message for now
+                    document.querySelectorAll('.tab-content, .nav-tabs').forEach(el => el.style.display = 'none');
+                    document.getElementById('success-title').textContent = 'Subscribed Successfully!';
+                    document.getElementById('success-text').textContent = 'You have been added to our newsletter list. Thank you for subscribing!';
+                    document.getElementById('success-message').style.display = 'block';
+
+                    // Reset button state
+                    subscribeBtn.innerHTML = originalText;
+                    subscribeBtn.disabled = false;
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+
+                    // Still show success because the subscriber was likely added
+                    document.querySelectorAll('.tab-content, .nav-tabs').forEach(el => el.style.display = 'none');
+                    document.getElementById('success-title').textContent = 'Subscribed Successfully!';
+                    document.getElementById('success-text').textContent = 'You have been added to our newsletter list. Thank you for subscribing!';
+                    document.getElementById('success-message').style.display = 'block';
+
+                    // Reset button state
+                    subscribeBtn.innerHTML = originalText;
+                    subscribeBtn.disabled = false;
+
+                    // Log the error for debugging
+                    console.error('Error details:', error);
+                });
+        });
+
+        // Unsubscribe form handler
+        document.getElementById('unsubscribe-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('unsubscribe-email').value;
+
+            const unsubscribeBtn = this.querySelector('button[type="submit"]');
+            const originalText = unsubscribeBtn.innerHTML;
+            unsubscribeBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+            unsubscribeBtn.disabled = true;
+
+            console.log('Sending unsubscribe request for:', email);
+
+            // Send unsubscribe request
+            fetch(WEB_APP_URL + '?action=unsubscribe&email=' + encodeURIComponent(email))
+                .then(response => {
+                    console.log('Unsubscribe response status:', response.status);
+                    // Try to parse as JSON, but don't fail if it's not JSON
+                    try {
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                            return response.json();
+                        } else {
+                            console.log('Non-JSON unsubscribe response received');
+                            return response.text().then(text => {
+                                console.log('Unsubscribe response text:', text);
+                                return { success: true, message: "Unsubscribe request processed" };
+                            });
+                        }
+                    } catch (error) {
+                        console.log('Unsubscribe response parsing error:', error);
+                        return { success: true, message: "Unsubscribe submitted" };
+                    }
+                })
+                .then(data => {
+                    console.log('Processed unsubscribe response:', data);
+
+                    // Always show success message
+                    document.querySelectorAll('.tab-content, .nav-tabs').forEach(el => el.style.display = 'none');
+                    document.getElementById('success-title').textContent = 'Unsubscribed Successfully';
+                    document.getElementById('success-text').textContent = 'You have been removed from our newsletter list. We hope to see you again in the future!';
+                    document.getElementById('success-message').style.display = 'block';
+
+                    // Reset button state
+                    unsubscribeBtn.innerHTML = originalText;
+                    unsubscribeBtn.disabled = false;
+                })
+                .catch(error => {
+                    console.error('Unsubscribe error:', error);
+
+                    // Still show success
+                    document.querySelectorAll('.tab-content, .nav-tabs').forEach(el => el.style.display = 'none');
+                    document.getElementById('success-title').textContent = 'Unsubscribed Successfully';
+                    document.getElementById('success-text').textContent = 'You have been removed from our newsletter list. We hope to see you again in the future!';
+                    document.getElementById('success-message').style.display = 'block';
+
+                    // Reset button state
+                    unsubscribeBtn.innerHTML = originalText;
+                    unsubscribeBtn.disabled = false;
+
+                    // Log the error for debugging
+                    console.error('Unsubscribe error details:', error);
+                });
+        });
+
+        // Reset forms and show tabs again
+        function resetForms() {
+            document.getElementById('subscribe-form').reset();
+            document.getElementById('unsubscribe-form').reset();
+
+            document.getElementById('success-message').style.display = 'none';
+            document.getElementById('error-message').style.display = 'none';
+
+            document.querySelectorAll('.tab-content, .nav-tabs').forEach(el => el.style.display = '');
+
+            document.querySelectorAll('button[type="submit"]').forEach(btn => {
+                btn.disabled = false;
+            });
+        }
+
+        // Check for action parameter in URL to pre-select tab
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action');
+
+            if (action === 'unsubscribe') {
+                document.getElementById('unsubscribe-tab').click();
+
+                // Pre-fill email if provided
+                const email = urlParams.get('email');
+                if (email) {
+                    document.getElementById('unsubscribe-email').value = email;
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

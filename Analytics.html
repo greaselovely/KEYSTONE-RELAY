@@ -1,0 +1,409 @@
+<!-- Analytics.html -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .dashboard-title {
+            color: #212529;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border: none;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 24px 15px;
+        }
+
+        .stat-card .stat-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #495057;
+        }
+
+        .stat-card .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 0;
+            color: #212529;
+        }
+
+        .table-card {
+            padding: 0;
+        }
+
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 20px 25px;
+        }
+
+        .card-header h5 {
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            border-top: none;
+            background-color: #f8f9fa;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .badge-success {
+            background-color: #28a745;
+        }
+
+        .badge-warning {
+            background-color: #ffc107;
+        }
+
+        .badge-danger {
+            background-color: #dc3545;
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 150px;
+        }
+
+        .fullscreen-container {
+            background-color: #f8f9fa;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        :fullscreen .fullscreen-container {
+            padding: 40px;
+        }
+
+        :fullscreen .card {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="dashboard-title">
+            <i class="bi bi-bar-chart-fill me-2"></i>
+            KEYSTONE RELAY Analytics Dashboard
+        </h2>
+
+        <div class="row" id="summaryCards">
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div class="stat-label">Total Subscribers</div>
+                    <div class="stat-value" id="totalSubs">-</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-icon">
+                        <i class="bi bi-person-check-fill"></i>
+                    </div>
+                    <div class="stat-label">Active Subscribers</div>
+                    <div class="stat-value" id="activeSubs">-</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-icon">
+                        <i class="bi bi-envelope-open-fill"></i>
+                    </div>
+                    <div class="stat-label">Average Open Rate</div>
+                    <div class="stat-value" id="avgOpenRate">-</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-icon">
+                        <i class="bi bi-cursor-fill"></i>
+                    </div>
+                    <div class="stat-label">Average Click Rate</div>
+                    <div class="stat-value" id="avgClickRate">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card table-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="bi bi-envelope-paper-fill me-2"></i>Campaign Performance</h5>
+                        <div>
+                            <button class="btn btn-sm btn-outline-secondary me-2" onclick="toggleFullscreen()">
+                                <i class="bi bi-arrows-fullscreen"></i> Fullscreen
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="refreshData()">
+                                <i class="bi bi-arrow-clockwise"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="refreshData()">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Campaign</th>
+                                <th>Sent</th>
+                                <th>Opens</th>
+                                <th>Clicks</th>
+                                <th>Unsubscribes</th>
+                                <th>Open Rate</th>
+                                <th>Click Rate</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="campaignBody">
+                            <tr>
+                                <td colspan="8">
+                                    <div class="loading-spinner">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4 mb-2">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-lightbulb-fill me-2"></i>Tips for Improvement</h5>
+                    <ul class="list-group list-group-flush mt-3">
+                        <li class="list-group-item">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Use clear, compelling subject lines to improve open rates
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Place important calls-to-action at the beginning of emails
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Test sending at different times of day to find optimal engagement
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            Segment your audience for more targeted messaging
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Load data when the page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            loadAnalyticsData();
+        });
+
+        function loadAnalyticsData() {
+            google.script.run
+                .withSuccessHandler(displayAnalytics)
+                .withFailureHandler(showError)
+                .getAnalyticsData();
+        }
+
+        function refreshData() {
+            const refreshBtn = document.querySelector('button.btn-outline-secondary');
+            const originalContent = refreshBtn.innerHTML;
+
+            refreshBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Refreshing...';
+            refreshBtn.disabled = true;
+
+            google.script.run
+                .withSuccessHandler(function (data) {
+                    displayAnalytics(data);
+                    refreshBtn.innerHTML = originalContent;
+                    refreshBtn.disabled = false;
+
+                    // Show toast notification
+                    showToast('Data refreshed successfully!');
+                })
+                .withFailureHandler(function (error) {
+                    showError(error);
+                    refreshBtn.innerHTML = originalContent;
+                    refreshBtn.disabled = false;
+                })
+                .getAnalyticsData();
+        }
+
+        function displayAnalytics(data) {
+            // Update summary metrics
+            document.getElementById('totalSubs').textContent = data.totalSubscribers;
+            document.getElementById('activeSubs').textContent = data.activeSubscribers;
+            document.getElementById('avgOpenRate').textContent = (data.averageOpenRate * 100).toFixed(1) + '%';
+            document.getElementById('avgClickRate').textContent = (data.averageClickRate * 100).toFixed(1) + '%';
+
+            // Update campaign table
+            const tbody = document.getElementById('campaignBody');
+            tbody.innerHTML = '';
+
+            if (data.campaigns.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4">No campaign data available yet.</td></tr>';
+                return;
+            }
+
+            data.campaigns.forEach(campaign => {
+                const row = document.createElement('tr');
+
+                const openRate = campaign.sent > 0 ? campaign.opens / campaign.sent : 0;
+                const clickRate = campaign.opens > 0 ? campaign.clicks / campaign.opens : 0;
+
+                // Determine status badge
+                let statusBadge = '';
+                if (openRate >= 0.3) {
+                    statusBadge = '<span class="badge bg-success">Excellent</span>';
+                } else if (openRate >= 0.15) {
+                    statusBadge = '<span class="badge bg-primary">Good</span>';
+                } else if (openRate >= 0.1) {
+                    statusBadge = '<span class="badge bg-warning text-dark">Average</span>';
+                } else {
+                    statusBadge = '<span class="badge bg-danger">Needs Improvement</span>';
+                }
+
+                row.innerHTML = `
+            <td><strong>${campaign.name}</strong></td>
+            <td>${campaign.sent}</td>
+            <td>${campaign.opens}</td>
+            <td>${campaign.clicks}</td>
+            <td>${campaign.unsubscribes}</td>
+            <td><strong>${(openRate * 100).toFixed(1)}%</strong></td>
+            <td><strong>${(clickRate * 100).toFixed(1)}%</strong></td>
+            <td>${statusBadge}</td>
+          `;
+
+                tbody.appendChild(row);
+            });
+        }
+
+        function showError(error) {
+            // Create alert div
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+            alertDiv.innerHTML = `
+          <strong>Error:</strong> ${error.message || 'An unknown error occurred'}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+
+            // Insert at top of container
+            const container = document.querySelector('.container');
+            container.insertBefore(alertDiv, container.firstChild);
+
+            // Auto dismiss after 8 seconds
+            setTimeout(() => {
+                const alert = bootstrap.Alert.getOrCreateInstance(alertDiv);
+                alert.close();
+            }, 8000);
+        }
+
+        function showToast(message) {
+            // Create toast container if it doesn't exist
+            if (!document.querySelector('.toast-container')) {
+                const toastContainer = document.createElement('div');
+                toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                document.body.appendChild(toastContainer);
+            }
+
+            const toastContainer = document.querySelector('.toast-container');
+
+            // Create toast
+            const toastElement = document.createElement('div');
+            toastElement.className = 'toast align-items-center text-white bg-success border-0';
+            toastElement.setAttribute('role', 'alert');
+            toastElement.setAttribute('aria-live', 'assertive');
+            toastElement.setAttribute('aria-atomic', 'true');
+
+            toastElement.innerHTML = `
+          <div class="d-flex">
+            <div class="toast-body">
+              <i class="bi bi-check-circle-fill me-2"></i>${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        `;
+
+            toastContainer.appendChild(toastElement);
+
+            const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
+            toast.show();
+        }
+
+        function toggleFullscreen() {
+            const elem = document.documentElement;
+
+            if (!document.fullscreenElement) {
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) { /* Safari */
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) { /* IE11 */
+                    elem.msRequestFullscreen();
+                }
+                document.querySelector('.bi-arrows-fullscreen').classList.replace('bi-arrows-fullscreen', 'bi-fullscreen-exit');
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) { /* Safari */
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { /* IE11 */
+                    document.msExitFullscreen();
+                }
+                document.querySelector('.bi-fullscreen-exit').classList.replace('bi-fullscreen-exit', 'bi-arrows-fullscreen');
+            }
+        }
+    </script>
+</body>
+
+</html>
